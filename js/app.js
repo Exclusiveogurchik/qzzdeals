@@ -56,15 +56,10 @@ document.addEventListener('DOMContentLoaded', () => {
             new Promise(r => setTimeout(r, 1000)) // Max wait 1 second for images
         ]);
 
-        const elapsed = Date.now() - start;
-        if (elapsed < 3000) {
-            await new Promise(r => setTimeout(r, 3000 - elapsed));
-        }
-
         const loader = document.getElementById('global-loader');
         if (loader) {
             loader.style.opacity = '0';
-            setTimeout(() => loader.style.display = 'none', 500);
+            setTimeout(() => loader.style.display = 'none', 300);
         }
     };
 

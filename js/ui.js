@@ -21,7 +21,7 @@ const UI = {
         return `
             <div class="game-card" data-title="${deal.title.replace(/"/g, '&quot;')}" onclick="openGameModal('${dealData}')" style="cursor: pointer;">
                 <div class="card-img-wrapper" style="position: relative;">
-                    <img src="${imgUrl}" alt="${deal.title}" class="card-img loading" onload="this.classList.remove('loading')" onerror="this.src='${fallbackUrl}'; this.onerror=function(){this.src='${deal.thumb}'; this.classList.remove('loading');};">
+                    <img src="${imgUrl}" alt="${deal.title}" loading="lazy" class="card-img loading" onload="this.classList.remove('loading')" onerror="this.src='${fallbackUrl}'; this.onerror=function(){this.src='${deal.thumb}'; this.classList.remove('loading');};">
                     <span class="card-store-icon">${storeName}</span>
                     
                     <button class="track-btn ${isTracked ? 'tracked' : ''}" onclick="toggleTrackPrice(event, '${deal.title.replace(/'/g, "\\'")}')" title="Отслеживать цену">
@@ -75,7 +75,7 @@ const UI = {
 
         return `
             <div class="hero-carousel-inner" id="hero-carousel-content" onclick="openGameModal('${dealData}')" style="cursor: pointer; height: 100%; width: 100%;">
-                <img src="${imgUrl}" alt="${deal.title}" class="hero-banner-img" id="hero-img" onerror="this.src='${fallbackUrl}'; this.onerror=function(){this.src='${fallbackUrl2}'; this.onerror=function(){this.src='${deal.thumb}';};};">
+                <img src="${imgUrl}" alt="${deal.title}" loading="lazy" class="hero-banner-img" id="hero-img" onerror="this.src='${fallbackUrl}'; this.onerror=function(){this.src='${fallbackUrl2}'; this.onerror=function(){this.src='${deal.thumb}';};};">
                 <div class="hero-banner-overlay">
                     <div class="hero-banner-tag">🔥 Скидка дня</div>
                     <h2 id="hero-title" style="font-size: 2rem; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">${deal.title}</h2>
