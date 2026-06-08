@@ -108,5 +108,20 @@ const API = {
             console.warn('RAWG error:', error);
             return null;
         }
+    },
+
+    // Fetch Stores
+    async getStores() {
+        try {
+            if (this.cache.has('stores')) return this.cache.get('stores');
+            const response = await fetch(`${this.CHEAPSHARK_BASE}/stores`);
+            if (!response.ok) throw new Error('Failed to fetch stores');
+            const data = await response.json();
+            this.cache.set('stores', data);
+            return data;
+        } catch (error) {
+            console.error('Error fetching stores:', error);
+            return [];
+        }
     }
 };

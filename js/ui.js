@@ -8,7 +8,8 @@ const UI = {
             discountClass += ' pulse';
         }
 
-        const imgUrl = deal.steamAppID ? `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${deal.steamAppID}/header.jpg` : deal.thumb;
+        const imgUrl = deal.steamAppID ? `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${deal.steamAppID}/capsule_616x353.jpg` : deal.thumb;
+        const fallbackUrl = deal.steamAppID ? `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${deal.steamAppID}/header.jpg` : deal.thumb;
         const dealData = encodeURIComponent(JSON.stringify(deal));
         
         // Check if tracked
@@ -20,7 +21,7 @@ const UI = {
         return `
             <div class="game-card" data-title="${deal.title.replace(/"/g, '&quot;')}" onclick="openGameModal('${dealData}')" style="cursor: pointer;">
                 <div class="card-img-wrapper" style="position: relative;">
-                    <img src="${imgUrl}" alt="${deal.title}" class="card-img loading" onload="this.classList.remove('loading')" onerror="this.src='${deal.thumb}'; this.classList.remove('loading')">
+                    <img src="${imgUrl}" alt="${deal.title}" class="card-img loading" onload="this.classList.remove('loading')" onerror="this.src='${fallbackUrl}'; this.onerror=function(){this.src='${deal.thumb}'; this.classList.remove('loading');};">
                     <span class="card-store-icon">${storeName}</span>
                     
                     <button class="track-btn ${isTracked ? 'tracked' : ''}" onclick="toggleTrackPrice(event, '${deal.title.replace(/'/g, "\\'")}')" title="Отслеживать цену">
@@ -57,20 +58,41 @@ const UI = {
         `;
     },
 
-    renderHeroBanner: (deal) => {
+    renderHeroBanner: (deal, totalDeals = 4, currentIndex = 0) => {
         const discountPercent = Math.round(deal.savings);
-        const imgUrl = deal.steamAppID ? `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${deal.steamAppID}/header.jpg` : deal.thumb;
+        const imgUrl = deal.steamAppID ? `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${deal.steamAppID}/library_hero.jpg` : deal.thumb;
+        const fallbackUrl = deal.steamAppID ? `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${deal.steamAppID}/capsule_616x353.jpg` : deal.thumb;
+        const fallbackUrl2 = deal.steamAppID ? `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${deal.steamAppID}/header.jpg` : deal.thumb;
+        
+        let dotsHtml = '';
+        if (totalDeals > 1) {
+            for (let i = 0; i < totalDeals; i++) {
+                dotsHtml += `<div class="hero-dot ${i === currentIndex ? 'active' : ''}" onclick="window.goToHero(${i}); event.stopPropagation();"></div>`;
+            }
+        }
+
+        const dealData = encodeURIComponent(JSON.stringify(deal));
+
         return `
-            <img src="${imgUrl}" alt="${deal.title}" class="hero-banner-img" id="hero-img" onerror="this.src='${deal.thumb}'">
-            <div class="hero-banner-overlay">
-                <div class="hero-banner-tag">🔥 Скидка дня</div>
-                <h2 style="font-size: 2rem; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">${deal.title}</h2>
-                <div class="card-pricing" style="margin-bottom: 1rem;">
-                    <span class="discount-badge">-${discountPercent}%</span>
-                    <span class="new-price" style="font-size: 1.5rem;">$${deal.salePrice}</span>
-                    <span class="old-price" style="font-size: 1rem; color: #ccc;">$${deal.normalPrice}</span>
+            <div class="hero-carousel-inner" id="hero-carousel-content" onclick="openGameModal('${dealData}')" style="cursor: pointer; height: 100%; width: 100%;">
+                <img src="${imgUrl}" alt="${deal.title}" class="hero-banner-img" id="hero-img" onerror="this.src='${fallbackUrl}'; this.onerror=function(){this.src='${fallbackUrl2}'; this.onerror=function(){this.src='${deal.thumb}';};};">
+                <div class="hero-banner-overlay">
+                    <div class="hero-banner-tag">🔥 Скидка дня</div>
+                    <h2 id="hero-title" style="font-size: 2rem; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">${deal.title}</h2>
+                    <div class="card-pricing" style="margin-bottom: 1rem;">
+                        <span class="discount-badge" id="hero-discount">-${discountPercent}%</span>
+                        <span class="new-price" id="hero-sale" style="font-size: 1.5rem;">$${deal.salePrice}</span>
+                        <span class="old-price" id="hero-normal" style="font-size: 1rem; color: #ccc;">$${deal.normalPrice}</span>
+                    </div>
                 </div>
             </div>
+            ${totalDeals > 1 ? `
+            <button class="hero-nav-btn prev" onclick="window.prevHero(); event.stopPropagation();"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+            <button class="hero-nav-btn next" onclick="window.nextHero(); event.stopPropagation();"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+            <div class="hero-dots" id="hero-dots">
+                ${dotsHtml}
+            </div>
+            ` : ''}
         `;
     },
 

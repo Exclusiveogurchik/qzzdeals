@@ -12,18 +12,24 @@
 </head>
 <body class="dark-theme auth-page">
 
+    <div class="lang-switcher">
+        <button class="lang-btn active" data-lang="ru" onclick="setLanguage('ru')">RU</button>
+        <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">EN</button>
+    </div>
+
     <div class="auth-bg"></div>
 
     <a href="index.html" class="auth-back-btn">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        На главную
+        <span data-i18n="btn_back_home">На главную</span>
     </a>
 
     <div class="auth-container">
         <a href="index.html" class="auth-logo">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="var(--primary-color)"/>
-                <path d="M2 17L12 22L22 17M2 12L12 17L22 12" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M 19.5 14.5 L 22 12 V 2 L 12 2 L 3.41 10.59 A 2 2 0 0 0 3.41 13.41 L 10.58 20.58 A 2 2 0 0 0 13.41 20.58 L 15 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M 16 18 L 18.5 15.5" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="17" cy="7" r="1.5" stroke="currentColor" stroke-width="2" fill="none"/>
             </svg>
             <span>QZZ Deals</span>
         </a>
@@ -33,11 +39,11 @@
             <!-- РЕГИСТРАЦИЯ -->
             <div id="view-register" class="view-register active">
                 <div class="auth-header">
-                    <h1>Присоединяйтесь к<br>QZZ Deals</h1>
-                    <p>Экономьте на играх вместе с нами</p>
+                    <h1 data-i18n="reg_title">Присоединяйтесь к<br>QZZ Deals</h1>
+                    <p data-i18n="reg_subtitle">Экономьте на играх вместе с нами</p>
                 </div>
 
-                <form class="auth-form" onsubmit="event.preventDefault(); window.location.href='app.html';">
+                <form class="auth-form" onsubmit="event.preventDefault(); localStorage.setItem('isRegistered', 'true'); window.location.href='app.html';">
                     <div class="form-group">
                         <label>EMAIL</label>
                         <div class="input-with-icon">
@@ -62,33 +68,33 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-neon">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+                    <button type="submit" class="btn-neon" data-i18n="btn_register">ЗАРЕГИСТРИРОВАТЬСЯ</button>
                 </form>
 
-                <div class="auth-divider">или</div>
+                <div class="auth-divider" data-i18n="or">или</div>
 
-                <button class="social-btn" onclick="window.location.href='app.html'">
+                <button class="social-btn" onclick="localStorage.setItem('isRegistered', 'true'); window.location.href='app.html'">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.967 1.485c-5.8 0-10.5 4.701-10.5 10.5 0 5.034 3.535 9.256 8.243 10.288l2.96-8.625c-.218-.112-.416-.27-.58-.465l-3.327 1.393c-.158.067-.34-.007-.406-.165-.066-.157.008-.34.165-.406l3.298-1.38c-.13-.306-.156-.64-.067-.962L8.51 9.945c-.157.066-.34-.008-.406-.166-.066-.158.008-.34.165-.406l3.21-1.343c.125-.333.326-.633.585-.882.884-.852 2.278-.856 3.166-.007.887.85.885 2.228-.003 3.078-.585.558-1.39.775-2.127.633l-2.43 7.078c.148.01.298.006.446-.01l2.42-7.054c.734.14 1.54-.08 2.12-.638.887-.85.888-2.228.003-3.078-.888-.85-2.282-.846-3.167.006z"/></svg>
-                    Войти через Steam
+                    <span data-i18n="login_steam">Войти через Steam</span>
                 </button>
-                <button class="social-btn" onclick="window.location.href='app.html'">
+                <button class="social-btn" onclick="localStorage.setItem('isRegistered', 'true'); window.location.href='app.html'">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                    Войти через Epic Games
+                    <span data-i18n="login_epic">Войти через Epic Games</span>
                 </button>
 
                 <div class="auth-footer">
-                    Уже есть аккаунт? <span class="auth-link" onclick="toggleAuthView('login')">Войти</span>
+                    <span data-i18n="have_account">Уже есть аккаунт?</span> <span class="auth-link" onclick="toggleAuthView('login')" data-i18n="log_in_link">Войти</span>
                 </div>
             </div>
 
             <!-- ВХОД -->
             <div id="view-login" class="view-login">
                 <div class="auth-header">
-                    <h1>С возвращением в<br>QZZ Deals</h1>
-                    <p>Продолжите экономить на играх</p>
+                    <h1 data-i18n="log_title">С возвращением в<br>QZZ Deals</h1>
+                    <p data-i18n="log_subtitle">Продолжите экономить на играх</p>
                 </div>
 
-                <form class="auth-form" onsubmit="event.preventDefault(); window.location.href='app.html';">
+                <form class="auth-form" onsubmit="event.preventDefault(); localStorage.setItem('isRegistered', 'true'); window.location.href='app.html';">
                     <div class="form-group">
                         <label>EMAIL</label>
                         <div class="input-with-icon">
@@ -105,22 +111,22 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-neon">ВОЙТИ</button>
+                    <button type="submit" class="btn-neon" data-i18n="btn_log_in">ВОЙТИ</button>
                 </form>
 
-                <div class="auth-divider">или</div>
+                <div class="auth-divider" data-i18n="or">или</div>
 
-                <button class="social-btn" onclick="window.location.href='app.html'">
+                <button class="social-btn" onclick="localStorage.setItem('isRegistered', 'true'); window.location.href='app.html'">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.967 1.485c-5.8 0-10.5 4.701-10.5 10.5 0 5.034 3.535 9.256 8.243 10.288l2.96-8.625c-.218-.112-.416-.27-.58-.465l-3.327 1.393c-.158.067-.34-.007-.406-.165-.066-.157.008-.34.165-.406l3.298-1.38c-.13-.306-.156-.64-.067-.962L8.51 9.945c-.157.066-.34-.008-.406-.166-.066-.158.008-.34.165-.406l3.21-1.343c.125-.333.326-.633.585-.882.884-.852 2.278-.856 3.166-.007.887.85.885 2.228-.003 3.078-.585.558-1.39.775-2.127.633l-2.43 7.078c.148.01.298.006.446-.01l2.42-7.054c.734.14 1.54-.08 2.12-.638.887-.85.888-2.228.003-3.078-.888-.85-2.282-.846-3.167.006z"/></svg>
-                    Войти через Steam
+                    <span data-i18n="login_steam">Войти через Steam</span>
                 </button>
-                <button class="social-btn" onclick="window.location.href='app.html'">
+                <button class="social-btn" onclick="localStorage.setItem('isRegistered', 'true'); window.location.href='app.html'">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                    Войти через Epic Games
+                    <span data-i18n="login_epic">Войти через Epic Games</span>
                 </button>
 
                 <div class="auth-footer">
-                    Нет аккаунта? <span class="auth-link" onclick="toggleAuthView('register')">Зарегистрироваться</span>
+                    <span data-i18n="no_account">Нет аккаунта?</span> <span class="auth-link" onclick="toggleAuthView('register')" data-i18n="reg_link">Зарегистрироваться</span>
                 </div>
             </div>
 
@@ -135,5 +141,6 @@
             document.getElementById('view-' + view).classList.add('active');
         }
     </script>
+    <script src="js/i18n.js"></script>
 </body>
 </html>

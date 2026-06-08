@@ -10,8 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const newDealsGrid = document.getElementById('new-deals-grid');
     const heroBanner = document.getElementById('hero-banner');
     
-    const storeFilter = document.getElementById('store-filter');
-    const sortFilter = document.getElementById('sort-filter');
     const searchInput = document.getElementById('search-input');
     
     const facts = [
@@ -72,61 +70,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let heroDeals = [];
     let currentHeroIndex = 0;
+    let heroIntervalId = null;
 
-    const updateHeroBanner = () => {
+    const startHeroInterval = () => {
+        if (heroIntervalId) clearInterval(heroIntervalId);
+        heroIntervalId = setInterval(() => {
+            window.nextHero();
+        }, 10000);
+    };
+
+    window.nextHero = () => {
         if (!heroDeals || heroDeals.length === 0) return;
-        const deal = heroDeals[currentHeroIndex];
-        const imgUrl = deal.steamAppID ? `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${deal.steamAppID}/header.jpg` : deal.thumb;
-        
-        const heroImg = document.getElementById('hero-img');
-        if (heroImg) {
-            heroImg.src = imgUrl;
-            heroImg.onerror = function() { this.src = deal.thumb; };
-        }
-        
-        const heroTitle = document.getElementById('hero-title');
-        if (heroTitle) heroTitle.innerText = deal.title;
-        
-        const heroDiscount = document.getElementById('hero-discount');
-        if (heroDiscount) heroDiscount.innerText = `-${Math.round(deal.savings)}%`;
-        
-        const heroPrice = document.getElementById('hero-price');
-        if (heroPrice) heroPrice.innerText = `$${deal.salePrice}`;
-        
-        const heroOldPrice = document.getElementById('hero-old-price');
-        if (heroOldPrice) heroOldPrice.innerText = deal.normalPrice !== deal.salePrice ? `$${deal.normalPrice}` : '';
+        currentHeroIndex = (currentHeroIndex + 1) % Math.min(4, heroDeals.length);
+        animateAndRenderHero();
+        startHeroInterval();
+    };
 
-        const heroBanner = document.getElementById('hero-banner');
-        if (heroBanner) {
-            heroBanner.onclick = (e) => {
-                if(e.target.tagName !== 'BUTTON') {
-                    window.openGameModal(encodeURIComponent(JSON.stringify(deal)));
+    window.prevHero = () => {
+        if (!heroDeals || heroDeals.length === 0) return;
+        const maxIndex = Math.min(4, heroDeals.length);
+        currentHeroIndex = (currentHeroIndex - 1 + maxIndex) % maxIndex;
+        animateAndRenderHero();
+        startHeroInterval();
+    };
+    
+    window.goToHero = (index) => {
+        if (!heroDeals || heroDeals.length === 0) return;
+        currentHeroIndex = index;
+        animateAndRenderHero();
+        startHeroInterval();
+    };
+
+    const animateAndRenderHero = () => {
+        const container = document.getElementById('hero-banner');
+        if (!container) return;
+        
+        const content = document.getElementById('hero-carousel-content');
+        if (content) {
+            content.classList.add('fade-out');
+            setTimeout(() => {
+                container.innerHTML = UI.renderHeroBanner(heroDeals[currentHeroIndex], Math.min(4, heroDeals.length), currentHeroIndex);
+                const newContent = document.getElementById('hero-carousel-content');
+                if(newContent) {
+                    newContent.classList.add('fade-in');
+                    setTimeout(() => newContent.classList.remove('fade-in'), 500);
                 }
-            };
-            heroBanner.style.cursor = 'pointer';
+            }, 300); // Wait for fade-out
+        } else {
+            container.innerHTML = UI.renderHeroBanner(heroDeals[currentHeroIndex], Math.min(4, heroDeals.length), currentHeroIndex);
         }
     };
 
-    const bannerPrev = document.getElementById('banner-prev');
-    const bannerNext = document.getElementById('banner-next');
-    if (bannerPrev) {
-        bannerPrev.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if(heroDeals.length > 0) {
-                currentHeroIndex = (currentHeroIndex - 1 + heroDeals.length) % heroDeals.length;
-                updateHeroBanner();
-            }
-        });
-    }
-    if (bannerNext) {
-        bannerNext.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if(heroDeals.length > 0) {
-                currentHeroIndex = (currentHeroIndex + 1) % heroDeals.length;
-                updateHeroBanner();
-            }
-        });
-    }
+    const updateHeroBanner = () => {
+        // Initial render without animation delay
+        const container = document.getElementById('hero-banner');
+        if (container && heroDeals && heroDeals.length > 0) {
+            container.innerHTML = UI.renderHeroBanner(heroDeals[currentHeroIndex], Math.min(4, heroDeals.length), currentHeroIndex);
+        }
+        startHeroInterval();
+    };
 
     // Parallax logic for Hero
     const parallaxHeroBanner = document.getElementById('hero-banner');
@@ -189,6 +191,25 @@ document.addEventListener('DOMContentLoaded', () => {
         // 4. New Deals (Just the rest)
         const newDealsHtml = deals.slice(5, 15).map(deal => UI.renderCard(deal)).join('');
         newDealsGrid.innerHTML = newDealsHtml;
+
+        if (window.PremiumAnimations) {
+            setTimeout(() => {
+                window.PremiumAnimations.init3DTilt();
+                window.PremiumAnimations.initStaggerForNewItems('#best-deals-grid');
+                window.PremiumAnimations.initStaggerForNewItems('#top-selling-grid');
+                window.PremiumAnimations.initStaggerForNewItems('#new-deals-grid');
+                
+                // Animate hero numbers
+                const heroPrice = document.getElementById('hero-price');
+                const heroDiscount = document.getElementById('hero-discount');
+                if (heroDeal && heroPrice) {
+                    window.PremiumAnimations.animatePriceCounter(heroPrice, 0, parseFloat(heroDeal.salePrice), 1200, '$');
+                }
+                if (heroDeal && heroDiscount) {
+                    window.PremiumAnimations.animatePriceCounter(heroDiscount, 0, Math.round(parseFloat(heroDeal.savings)), 1000, '-', '%');
+                }
+            }, 50);
+        }
     };
 
     // Scroll Buttons Logic
@@ -212,7 +233,9 @@ document.addEventListener('DOMContentLoaded', () => {
         'all': document.getElementById('page-home'),
         'popular': document.getElementById('page-popular'),
         'free': document.getElementById('page-free'),
-        'stores': document.getElementById('page-stores')
+        'stores': document.getElementById('page-stores'),
+        'preorder': document.getElementById('page-preorder'),
+        'preorder-content': document.getElementById('page-preorder-content')
     };
 
     const navLinks = document.querySelectorAll('.nav-links a');
@@ -243,12 +266,44 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (filter === 'popular') {
                 currentSort = 'Deal Rating';
                 loadPageDeals('popular-page-grid', false, true);
+            } else if (filter === 'stores') {
+                loadStoresPage();
             } else if (filter === 'preorder') {
-                // Not requested explicitly to have a page, let's just go home and sort by something else or just show home
-                if (pages['all']) pages['all'].style.display = 'block';
+                if (localStorage.getItem('isRegistered') === 'true') {
+                    if (pages['preorder']) pages['preorder'].style.display = 'none';
+                    if (pages['preorder-content']) {
+                        pages['preorder-content'].style.display = 'block';
+                        loadPreorderDeals();
+                    }
+                } else {
+                    if (pages['preorder']) pages['preorder'].style.display = 'block';
+                }
             }
         });
     });
+
+    const loadStoresPage = async () => {
+        const container = document.querySelector('.stores-grid');
+        if (!container) return;
+        
+        container.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">Загрузка списка магазинов...</p>';
+        
+        const stores = await API.getStores();
+        if (!stores || stores.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">Не удалось загрузить магазины.</p>';
+            return;
+        }
+
+        // Filter out inactive stores
+        const activeStores = stores.filter(s => s.isActive === 1);
+        
+        container.innerHTML = activeStores.map(store => `
+            <div class="store-card" onclick="window.open('https://www.cheapshark.com/redirect?storeID=${store.storeID}', '_blank')">
+                <img class="store-logo" src="https://www.cheapshark.com${store.images.logo}" alt="${store.storeName}">
+                <span class="store-name">${store.storeName}</span>
+            </div>
+        `).join('');
+    };
 
     const loadPageDeals = async (containerId, isFree = false, isTierList = false) => {
         const container = document.getElementById(containerId);
@@ -277,27 +332,61 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const html = uniqueDeals.slice(0, 10).map((deal, i) => {
-                const imgUrl = deal.steamAppID ? `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${deal.steamAppID}/header.jpg` : deal.thumb;
-                const tierColor = i === 0 ? '#fbbf24' : i === 1 ? '#94a3b8' : i === 2 ? '#b45309' : 'var(--border-color)';
+                const imgUrl = deal.steamAppID ? `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${deal.steamAppID}/capsule_616x353.jpg` : deal.thumb;
+                const fallbackUrl = deal.steamAppID ? `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${deal.steamAppID}/header.jpg` : deal.thumb;
+                const storeName = Utils.getStoreName(deal.storeID);
+                const dealData = encodeURIComponent(JSON.stringify(deal));
+                const rankText = i === 0 ? '🥇 #1' : i === 1 ? '🥈 #2' : i === 2 ? '🥉 #3' : `0${i+1}`.slice(-2);
+                
+                // Generate a believable mock sparkline
+                const yPoints = Array.from({length: 8}, () => Math.floor(Math.random() * 15) + 5);
+                const pathD = `M 0,${yPoints[0]} ` + yPoints.map((y, idx) => `L ${idx * 14},${y}`).join(' ');
+
+                // Check tracked state
+                const trackedGames = JSON.parse(localStorage.getItem('trackedGames') || '[]');
+                const isTracked = trackedGames.includes(deal.title);
+
                 return `
-                    <div style="display: flex; gap: 1.5rem; align-items: center; background: var(--bg-card); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1rem; border-left: 4px solid ${tierColor}">
-                        <div style="font-size: 2rem; font-weight: 800; color: ${tierColor}; width: 40px; text-align: center;">${i + 1}</div>
-                        <img src="${imgUrl}" alt="${deal.title}" style="width: 160px; height: 90px; object-fit: cover; border-radius: 4px;" onerror="this.src='${deal.thumb}'">
-                        <div style="flex: 1;">
-                            <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">${deal.title}</h3>
-                            <div class="card-pricing">
-                                <span class="discount-badge">-${Math.round(deal.savings)}%</span>
-                                <span class="new-price">$${deal.salePrice}</span>
-                                ${deal.normalPrice !== deal.salePrice ? `<span class="old-price">$${deal.normalPrice}</span>` : ''}
+                    <div class="tier-card-premium" onclick="window.openGameModal('${dealData}')">
+                        <div class="tier-rank rank-${i+1}">${rankText}</div>
+                        <div class="tier-image-wrapper">
+                            <img src="${imgUrl}" alt="${deal.title}" onerror="this.src='${fallbackUrl}'; this.onerror=function(){this.src='${deal.thumb}';};">
+                        </div>
+                        <div class="tier-content">
+                            <div class="tier-pricing">
+                                <span class="tier-discount">-${Math.round(deal.savings)}%</span>
+                                <span class="tier-price">$${deal.salePrice}</span>
+                            </div>
+                            <div class="tier-title-row">
+                                <h3 class="tier-title" title="${deal.title.replace(/"/g, '&quot;')}">${deal.title}</h3>
+                                <span class="tier-rating">⭐ ${(parseFloat(deal.dealRating || 0)).toFixed(1)}/10</span>
                             </div>
                         </div>
-                        <button class="btn btn-primary">В магазин</button>
+                        <div class="tier-sparkline">
+                            <svg viewBox="0 0 100 25" style="width: 100%; height: 25px;">
+                                <path d="${pathD}" fill="none" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span class="sparkline-label" style="display:block; text-align:center;">Цена за 30 дней</span>
+                        </div>
+                        <div class="tier-actions">
+                            <button class="tier-fav-btn ${isTracked ? 'active' : ''}" onclick="window.toggleTrackPrice(event, '${deal.title.replace(/'/g, "\\'")}')" title="В избранное">${isTracked ? '♥' : '♡'}</button>
+                            <button class="btn btn-primary tier-buy-btn" onclick="window.open('https://www.cheapshark.com/redirect?dealID=${deal.dealID}', '_blank'); event.stopPropagation();">
+                                ${storeName} &rarr; Купить
+                            </button>
+                        </div>
                     </div>
                 `;
             }).join('');
             container.innerHTML = html;
         } else {
             container.innerHTML = deals.map(deal => UI.renderCard(deal)).join('');
+        }
+
+        if (window.PremiumAnimations) {
+            setTimeout(() => {
+                window.PremiumAnimations.init3DTilt();
+                window.PremiumAnimations.initStaggerForNewItems('#' + containerId);
+            }, 50);
         }
     };
 
@@ -334,15 +423,77 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Event Listeners
-    storeFilter.addEventListener('change', (e) => {
-        currentStore = e.target.value;
-        loadDeals();
+    // Load Preorder Deals (Mock)
+    window.loadPreorderDeals = async () => {
+        const grid = document.getElementById('preorder-page-grid');
+        if (!grid) return;
+        if (grid.innerHTML.trim() !== '') return; // Already loaded
+
+        grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 3rem; text-align: center;"><div class="loader-spinner" style="margin: 0 auto;"></div><p style="margin-top:1rem; color:var(--text-muted);">Ищем предзаказы...</p></div>';
+
+        // Mocking preorders by fetching some high-price deals from CheapShark
+        const deals = await API.getDeals({ lowerPrice: 40, pageSize: 8 });
+        if (!deals || deals.length === 0) {
+            grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">Предзаказов не найдено</div>';
+            return;
+        }
+
+        grid.innerHTML = '';
+        deals.forEach(deal => {
+            const card = createGameCard(deal);
+            grid.appendChild(card);
+        });
+    };
+
+    // Custom Select Logic
+    document.querySelectorAll('.custom-select').forEach(select => {
+        const trigger = select.querySelector('.custom-select-trigger');
+        const options = select.querySelectorAll('.custom-option');
+        
+        select.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // close others
+            document.querySelectorAll('.custom-select').forEach(s => {
+                if(s !== select) s.classList.remove('open');
+            });
+            select.classList.toggle('open');
+            // Bring the wrapper to front so it doesn't get hidden by cards
+            document.querySelectorAll('.custom-select-wrapper').forEach(w => w.style.zIndex = '1');
+            if (select.classList.contains('open')) {
+                select.closest('.custom-select-wrapper').style.zIndex = '1000';
+            }
+        });
+
+        options.forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.stopPropagation();
+                select.setAttribute('data-value', this.getAttribute('data-value'));
+                trigger.textContent = this.textContent;
+                select.classList.remove('open');
+                select.closest('.custom-select-wrapper').style.zIndex = '1';
+                
+                options.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                if (select.id === 'sort-filter') {
+                    currentSort = this.getAttribute('data-value');
+                    loadDeals();
+                } else if (select.id === 'store-filter') {
+                    currentStore = this.getAttribute('data-value');
+                    loadDeals();
+                }
+            });
+        });
     });
 
-    sortFilter.addEventListener('change', (e) => {
-        currentSort = e.target.value;
-        loadDeals();
+    // Close select when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.custom-select')) {
+            document.querySelectorAll('.custom-select').forEach(s => {
+                s.classList.remove('open');
+                s.closest('.custom-select-wrapper').style.zIndex = '1';
+            });
+        }
     });
 
     const searchDropdown = document.getElementById('search-dropdown');
@@ -351,11 +502,14 @@ document.addEventListener('DOMContentLoaded', () => {
         searchQuery = e.target.value.trim();
         
         if (searchQuery.length > 2) {
-            // Reverted to CheapShark deals API as requested by user ("не надо во всем мире искать")
-            let searchResults = await API.getDeals({ title: searchQuery, exact: 0, pageSize: 8 });
+            // Show loading state in dropdown
+            searchDropdown.innerHTML = '<div style="padding: 1rem; color: var(--text-muted); text-align: center;"><div class="loader-spinner" style="width:20px; height:20px; margin:0 auto; border-width: 2px;"></div></div>';
+            searchDropdown.style.display = 'block';
+
+            let searchResults = await API.getDeals({ title: searchQuery, exact: 0, pageSize: 10 });
             
             if (searchResults && searchResults.length > 0) {
-                // Deduplicate deals by title to avoid clutter
+                // Deduplicate deals by title
                 const uniqueResults = [];
                 const titles = new Set();
                 for (const deal of searchResults) {
@@ -365,28 +519,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
 
-                searchDropdown.innerHTML = uniqueResults.slice(0, 5).map(deal => {
+                searchDropdown.innerHTML = uniqueResults.slice(0, 6).map(deal => {
                     const dealData = encodeURIComponent(JSON.stringify(deal));
-                    const imgUrl = deal.steamAppID ? `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${deal.steamAppID}/header.jpg` : deal.thumb;
+                    const imgUrl = deal.steamAppID ? `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${deal.steamAppID}/capsule_616x353.jpg` : deal.thumb;
+                    const fallbackUrl = deal.steamAppID ? `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${deal.steamAppID}/header.jpg` : deal.thumb;
 
                     return `
-                    <div class="search-dropdown-item" onclick="openGameModal('${dealData}')">
-                        <img src="${imgUrl}" alt="${deal.title}" onerror="this.src='${deal.thumb}'">
+                    <div class="search-dropdown-item" onclick="window.openGameModal('${dealData}')">
+                        <img src="${imgUrl}" alt="${deal.title}" onerror="this.src='${fallbackUrl}'; this.onerror=function(){this.src='${deal.thumb}';};">
                         <div class="search-dropdown-info">
                             <div class="search-dropdown-title">${deal.title}</div>
                             <div class="search-dropdown-price">От $${deal.salePrice}</div>
                         </div>
                     </div>`;
                 }).join('');
-                searchDropdown.style.display = 'block';
             } else {
                 searchDropdown.innerHTML = '<div style="padding: 1rem; color: var(--text-muted); text-align: center;">Ничего не найдено</div>';
-                searchDropdown.style.display = 'block';
             }
         } else {
             searchDropdown.style.display = 'none';
         }
-    }, 500));
+    }, 400));
 
     // Close dropdown on click outside
     document.addEventListener('click', (e) => {
@@ -398,6 +551,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Theme Switcher Placeholder
     // The design is dark by default. We can toggle class 'light-theme' on body to test.
 
+    // Promo Popup Logic
+    const promoPopup = document.getElementById('promo-popup');
+    const promoClose = document.getElementById('promo-close');
+    const promoLater = document.getElementById('promo-later');
+    
+    if (promoPopup && !localStorage.getItem('promoDismissed2')) {
+        setTimeout(() => {
+            promoPopup.style.display = 'flex';
+            setTimeout(() => promoPopup.classList.add('show'), 50);
+        }, 20000); // 20 seconds
+        
+        const dismissPromo = () => {
+            promoPopup.classList.remove('show');
+            setTimeout(() => promoPopup.style.display = 'none', 500);
+            localStorage.setItem('promoDismissed2', 'true');
+        };
+        
+        if (promoClose) promoClose.addEventListener('click', dismissPromo);
+        if (promoLater) promoLater.addEventListener('click', dismissPromo);
+    }
+
     // Start
     init();
 });
@@ -406,11 +580,13 @@ document.addEventListener('DOMContentLoaded', () => {
 window.openGameModal = async (dealDataEnc, isFromSearch = false) => {
     try {
         let deal = JSON.parse(decodeURIComponent(dealDataEnc));
-        const modal = document.getElementById('game-modal');
+        
+        // Modal Events
+        const gameModal = document.getElementById('game-modal');
         const modalBody = document.getElementById('modal-body');
         
         modalBody.innerHTML = '<div style="padding: 3rem; text-align: center;"><div class="loader-spinner" style="margin: 0 auto;"></div><p style="margin-top:1rem; color:var(--text-muted);">Загрузка данных об игре...</p></div>';
-        modal.style.display = 'flex';
+        gameModal.style.display = 'flex';
         document.body.style.overflow = 'hidden'; // Lock background scroll
         
         // If opened from RAWG search, let's find if there is a CheapShark deal!
@@ -424,8 +600,15 @@ window.openGameModal = async (dealDataEnc, isFromSearch = false) => {
 
         const rawgDetails = await API.getRawgDetails(deal.title);
         
-        const imgUrl = deal.steamAppID ? `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${deal.steamAppID}/header.jpg` : deal.thumb;
-        const heroBg = rawgDetails && rawgDetails.background ? rawgDetails.background : imgUrl;
+        // Modal hero background fallback chain
+        let heroBg = deal.thumb;
+        if (deal.steamAppID) {
+            heroBg = `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${deal.steamAppID}/library_hero.jpg`;
+            // For CSS background we can't easily chain onerror, so we just use library_hero and hope for the best, or fallback to rawg
+        }
+        if (rawgDetails && rawgDetails.background && !deal.steamAppID) {
+            heroBg = rawgDetails.background;
+        }
         
         let desc = rawgDetails ? rawgDetails.description : 'Описание временно недоступно.';
         let gameplayHtml = '';
