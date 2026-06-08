@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QZZ Deals - Актуальные скидки на игры</title>
+    <meta name="description" content="Экономь на играх до 95% каждый день. Отслеживаем цены в Steam, Epic Games, GOG, Humble Bundle и ещё 40+ магазинах.">
+    <meta property="og:title" content="QZZ Deals">
+    <meta property="og:description" content="Экономь на играх до 95% каждый день. Лучшие скидки.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body class="dark-theme">
+    <!-- Global Loader -->
+    <div id="global-loader" class="global-loader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <div class="loader-text">Сбор лучших предложений...</div>
+            <div class="loader-fact" id="loader-fact"></div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="var(--primary-color)"/>
+                    <path d="M2 17L12 22L22 17M2 12L12 17L22 12" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>QZZ Deals</span>
+                <div class="live-badge"><span class="dot"></span> Live</div>
+            </div>
+            
+            <nav class="nav-links">
+                <a href="#" class="active" data-filter="all">Главная</a>
+                <a href="#" data-filter="popular">Популярные</a>
+                <a href="#" data-filter="free">Бесплатные</a>
+                <a href="#" data-filter="preorder">Предзаказы</a>
+                <a href="#" data-filter="stores">Магазины</a>
+            </nav>
+
+            <div class="header-actions">
+                <button class="icon-btn" aria-label="Поиск">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                </button>
+                <button class="icon-btn" aria-label="Избранное">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </button>
+                <button class="icon-btn" aria-label="Уведомления">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </button>
+                <button class="profile-btn" aria-label="Профиль">
+                    <img src="https://ui-avatars.com/api/?name=User&background=333&color=fff" alt="User Avatar">
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div id="page-home">
+        <!-- Hero Section -->
+        <section class="hero container">
+            <div class="hero-left">
+                <span class="badge badge-outline">Обновлено только что</span>
+                <h1>Экономь на играх<br>до <span class="highlight">100%</span> каждый день</h1>
+                <p>Отслеживаем лучшие скидки в реальном времени.</p>
+                
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                        <div>
+                            <strong>Актуальные</strong>
+                            <span>скидки сейчас</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                        <div>
+                            <strong>Онлайн</strong>
+                            <span>обновление цен</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" id="hero-btn-view-all">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                    Смотреть все скидки
+                </button>
+            </div>
+            
+            <div class="hero-right">
+                <div class="hero-banner" id="hero-banner">
+                    <button class="banner-arrow left" id="banner-prev">&lt;</button>
+                    <button class="banner-arrow right" id="banner-next">&gt;</button>
+                    <span class="badge" style="position: absolute; top: 1rem; right: 1rem; z-index: 2; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);">🔥 Скидка дня</span>
+                    <img src="" alt="Deal of the Day" class="hero-banner-img" id="hero-img">
+                    <div class="hero-banner-info">
+                        <h3 id="hero-title">Загрузка...</h3>
+                        <div class="hero-banner-price">
+                            <span class="discount-badge" id="hero-discount">-0%</span>
+                            <span class="new-price" id="hero-price">$0.00</span>
+                            <span class="old-price" id="hero-old-price">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filters Bar -->
+        <section class="filters-bar container">
+            <div class="search-input-wrapper">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                <input type="text" id="search-input" placeholder="Поиск игр..." autocomplete="off">
+                <div id="search-dropdown" class="search-dropdown" style="display: none;"></div>
+            </div>
+            <div class="filters-dropdowns">
+                <select id="store-filter">
+                    <option value="">Все магазины</option>
+                    <option value="1">Steam</option>
+                    <option value="25">Epic Games</option>
+                    <option value="7">GOG</option>
+                </select>
+                <select id="genre-filter">
+                    <option value="">Любая категория</option>
+                    <!-- Will be populated if using RAWG, else we mock/skip -->
+                </select>
+                <select id="sort-filter">
+                    <option value="Deal Rating">Сортировка: Популярное</option>
+                    <option value="Price">Цена: по возрастанию</option>
+                    <option value="Savings">Размер скидки</option>
+                </select>
+                <button class="btn btn-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                    Фильтры
+                </button>
+            </div>
+        </section>
+
+        <!-- Best Deals Section -->
+        <section class="deals-section container">
+            <div class="section-header">
+                <h2>Лучшие предложения дня <span class="emoji">🔥</span></h2>
+                <a href="#" class="view-all">Посмотреть все <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+            </div>
+            <div class="scroll-container">
+                <button class="scroll-btn left" aria-label="Scroll left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+                <div class="cards-grid horizontal-scroll" id="best-deals-grid">
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+                <button class="scroll-btn right" aria-label="Scroll right"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            </div>
+        </section>
+
+        <!-- Top Selling Section -->
+        <section class="deals-section container">
+            <div class="section-header">
+                <h2>Сейчас покупают <span class="emoji">📈</span></h2>
+                <a href="#" class="view-all">Посмотреть все <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+            </div>
+            <div class="scroll-container">
+                <button class="scroll-btn left" aria-label="Scroll left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+                <div class="cards-grid horizontal-scroll ranked-list" id="top-selling-grid">
+                    <!-- Dynamically loaded -->
+                </div>
+                <button class="scroll-btn right" aria-label="Scroll right"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            </div>
+        </section>
+
+        <!-- New Deals Section -->
+        <section class="deals-section container">
+            <div class="section-header">
+                <h2>Новые скидки <span class="badge">142</span></h2>
+                <a href="#" class="view-all">Посмотреть все <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+            </div>
+            <div class="scroll-container">
+                <button class="scroll-btn left" aria-label="Scroll left"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+                <div class="cards-grid horizontal-scroll" id="new-deals-grid">
+                    <!-- Dynamically loaded -->
+                </div>
+                <button class="scroll-btn right" aria-label="Scroll right"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            </div>
+        </section>
+        
+        <!-- Features Section -->
+        <section class="features-section container">
+            <div class="feature-card">
+                <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
+                <div>
+                    <h3>Актуальные скидки</h3>
+                    <p>Обновляем предложения<br>каждый день</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></div>
+                <div>
+                    <h3>Отслеживание цен</h3>
+                    <p>Следите за ценой<br>любимых игр</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+                <div>
+                    <h3>Уведомления</h3>
+                    <p>Получайте уведомления<br>о снижении цены</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+                <div>
+                    <h3>Проверенные магазины</h3>
+                    <p>Только надёжные<br>источники скидок</p>
+                </div>
+            </div>
+        </section>
+        </div> <!-- end #page-home -->
+
+        <!-- Popular Page (Tier List) -->
+        <div id="page-popular" style="display: none;" class="container deals-section">
+            <div class="section-header">
+                <h2>Популярные игры (Тир-лист) 🏆</h2>
+            </div>
+            <div class="tier-list-container" id="popular-page-grid">
+                <!-- Dynamically loaded tier list -->
+            </div>
+        </div>
+
+        <!-- Free Page -->
+        <div id="page-free" style="display: none;" class="container deals-section">
+            <div class="section-header">
+                <h2>Бесплатные раздачи 🎁</h2>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem;" id="free-page-grid">
+                <!-- Dynamically loaded grid -->
+            </div>
+        </div>
+
+        <!-- Stores Page -->
+        <div id="page-stores" style="display: none;" class="container deals-section">
+            <div class="section-header">
+                <h2>Магазины 🏪</h2>
+            </div>
+            <p style="color: var(--text-muted)">Здесь скоро появится огромный список магазинов-партнеров.</p>
+        </div>
+
+    </main>
+
+    <!-- Game Details Modal -->
+    <div id="game-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <button id="modal-close" class="icon-btn" style="position: absolute; top: 1rem; right: 1rem; background: rgba(0,0,0,0.5);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <footer class="footer container">
+        <div class="footer-left">
+            <p>&copy; 2024 QZZ Deals. Все права защищены.</p>
+        </div>
+        <div class="footer-links">
+            <a href="#">О проекте</a>
+            <a href="#">Контакты</a>
+            <a href="#">Условия использования</a>
+            <a href="#">Политика конфиденциальности</a>
+        </div>
+    </footer>
+
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

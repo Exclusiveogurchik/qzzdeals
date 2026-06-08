@@ -1,0 +1,84 @@
+:root {
+    /* Color Palette - Dark Theme (Default) */
+    --bg-main: #09090b; /* Very dark background */
+    --bg-card: #141416; /* Slightly lighter for cards */
+    --bg-card-hover: #1c1c1f;
+    --bg-input: #1f1f23;
+    --border-color: #27272a;
+    
+    /* Text Colors */
+    --text-primary: #f8fafc;
+    --text-secondary: #a1a1aa;
+    --text-muted: #52525b;
+    
+    /* Brand/Accent Colors */
+    --primary-color: #22c55e; /* Green for deals */
+    --primary-hover: #16a34a;
+    --accent-red: #ef4444; /* For hot deals or big discounts */
+    
+    /* Layout */
+    --container-width: 1400px;
+    --header-height: 70px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    
+    /* Shadows & Effects */
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --shadow-glow: 0 0 20px rgba(34, 197, 94, 0.2);
+    --transition-fast: 0.2s ease;
+    --transition-medium: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="light"] {
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f1f5f9;
+    --bg-input: #e2e8f0;
+    --border-color: #cbd5e1;
+    
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
+    --shadow-glow: 0 0 20px rgba(34, 197, 94, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+    border: none;
+    outline: none;
+    background: none;
+}
+
+ul {
+    list-style: none;
+}
+
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 24px;
+}
