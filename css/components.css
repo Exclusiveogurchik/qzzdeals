@@ -904,3 +904,74 @@
     }
 }
 
+/* Promo Popup */
+.promo-popup {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    width: 350px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transform: translateY(150%);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+}
+
+.promo-popup.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.promo-close-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.promo-close-btn:hover {
+    color: var(--text-main);
+}
+
+.promo-icon {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: -0.5rem;
+}
+
+.promo-content h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-main);
+}
+
+.promo-content p {
+    margin: 0 0 1rem 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.promo-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .promo-popup {
+        bottom: 1rem;
+        right: 1rem;
+        left: 1rem;
+        width: auto;
+    }
+}
+
