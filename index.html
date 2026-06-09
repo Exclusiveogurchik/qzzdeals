@@ -181,6 +181,20 @@
         </section>
     </main>
 
+    <!-- Promo Popup (Registration Nudge) -->
+    <div id="promo-popup" class="promo-popup" style="display: none;">
+        <button id="promo-close" class="icon-btn promo-close-btn" aria-label="Закрыть"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <div class="promo-icon">🎁</div>
+        <div class="promo-content">
+            <h4 data-i18n="promo_title">Не пропускай скидки до 90%</h4>
+            <p data-i18n="promo_desc">Создай аккаунт прямо сейчас и получай лучшие предложения.</p>
+            <div class="promo-actions">
+                <button class="btn btn-primary btn-sm" data-i18n="btn_create_account" onclick="window.location.href='auth.html'">Зарегистрироваться</button>
+                <button class="btn btn-outline btn-sm" id="promo-later" data-i18n="btn_later">Позже</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Script for custom video transition -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -232,6 +246,29 @@
 
             v1.addEventListener('timeupdate', handleTimeUpdate(v1, v2));
             v2.addEventListener('timeupdate', handleTimeUpdate(v2, v1));
+        });
+
+        // 20-second Registration Popup Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const promoPopup = document.getElementById('promo-popup');
+            const promoClose = document.getElementById('promo-close');
+            const promoLater = document.getElementById('promo-later');
+            
+            if (promoPopup && !localStorage.getItem('authToken') && !localStorage.getItem('promoDismissedGlobal')) {
+                setTimeout(() => {
+                    promoPopup.style.display = 'flex';
+                    setTimeout(() => promoPopup.classList.add('show'), 50);
+                }, 20000); // 20 seconds
+                
+                const dismissPromo = () => {
+                    promoPopup.classList.remove('show');
+                    setTimeout(() => promoPopup.style.display = 'none', 500);
+                    localStorage.setItem('promoDismissedGlobal', 'true');
+                };
+                
+                if (promoClose) promoClose.addEventListener('click', dismissPromo);
+                if (promoLater) promoLater.addEventListener('click', dismissPromo);
+            }
         });
     </script>
     <script src="js/animations.js"></script>

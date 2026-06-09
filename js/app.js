@@ -552,7 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const promoClose = document.getElementById('promo-close');
     const promoLater = document.getElementById('promo-later');
     
-    if (promoPopup && !localStorage.getItem('promoDismissed2')) {
+    if (promoPopup && !localStorage.getItem('authToken') && !localStorage.getItem('promoDismissedGlobal')) {
         setTimeout(() => {
             promoPopup.style.display = 'flex';
             setTimeout(() => promoPopup.classList.add('show'), 50);
@@ -561,7 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const dismissPromo = () => {
             promoPopup.classList.remove('show');
             setTimeout(() => promoPopup.style.display = 'none', 500);
-            localStorage.setItem('promoDismissed2', 'true');
+            localStorage.setItem('promoDismissedGlobal', 'true');
         };
         
         if (promoClose) promoClose.addEventListener('click', dismissPromo);
