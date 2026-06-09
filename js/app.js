@@ -264,7 +264,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (filter === 'stores') {
                 loadStoresPage();
             } else if (filter === 'preorder') {
-                if (localStorage.getItem('isRegistered') === 'true') {
+                if (localStorage.getItem('authToken')) {
+                    App.showToast('Предзаказы загружаются...');
                     if (pages['preorder']) pages['preorder'].style.display = 'none';
                     if (pages['preorder-content']) {
                         pages['preorder-content'].style.display = 'block';

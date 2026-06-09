@@ -873,3 +873,34 @@
     font-weight: 600;
     color: var(--text-primary);
 }
+
+@media (max-width: 768px) {
+    .games-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+    
+    .horizontal-scroll {
+        grid-auto-columns: minmax(180px, 1fr);
+        gap: 1rem;
+    }
+
+    .card-pricing {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 4px;
+    }
+
+    .hero-carousel-inner h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    .hero-carousel-inner .new-price {
+        font-size: 1.25rem !important;
+    }
+
+    .hero-banner-overlay {
+        padding: 1.5rem;
+    }
+}
+

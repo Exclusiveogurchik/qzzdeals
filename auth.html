@@ -44,12 +44,13 @@
                     <p data-i18n="reg_subtitle">Экономьте на играх вместе с нами</p>
                 </div>
 
-                <form class="auth-form" onsubmit="event.preventDefault(); localStorage.setItem('isRegistered', 'true'); window.location.href='app.html';">
+                <form id="registerForm" class="auth-form">
+                    <div id="registerError" style="color: #ef4444; font-size: 0.9rem; margin-bottom: 10px; display: none;"></div>
                     <div class="form-group">
                         <label>EMAIL</label>
                         <div class="input-with-icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                            <input type="email" class="auth-input" placeholder="you@example.com" required>
+                            <input type="email" id="regEmail" class="auth-input" placeholder="you@example.com" required>
                         </div>
                     </div>
 
@@ -65,7 +66,7 @@
                         <label>PASSWORD</label>
                         <div class="input-with-icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                            <input type="password" class="auth-input" placeholder="••••••••" required>
+                            <input type="password" id="regPassword" class="auth-input" placeholder="••••••••" required>
                         </div>
                     </div>
 
@@ -95,12 +96,13 @@
                     <p data-i18n="log_subtitle">Продолжите экономить на играх</p>
                 </div>
 
-                <form class="auth-form" onsubmit="event.preventDefault(); localStorage.setItem('isRegistered', 'true'); window.location.href='app.html';">
+                <form id="loginForm" class="auth-form">
+                    <div id="loginError" style="color: #ef4444; font-size: 0.9rem; margin-bottom: 10px; display: none;"></div>
                     <div class="form-group">
                         <label>EMAIL</label>
                         <div class="input-with-icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                            <input type="email" class="auth-input" placeholder="you@example.com" required>
+                            <input type="email" id="logEmail" class="auth-input" placeholder="you@example.com" required>
                         </div>
                     </div>
 
@@ -108,7 +110,7 @@
                         <label>PASSWORD</label>
                         <div class="input-with-icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                            <input type="password" class="auth-input" placeholder="••••••••" required>
+                            <input type="password" id="logPassword" class="auth-input" placeholder="••••••••" required>
                         </div>
                     </div>
 
@@ -141,6 +143,66 @@
             
             document.getElementById('view-' + view).classList.add('active');
         }
+
+        const API_URL = 'http://localhost:3000/api/auth';
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const errorDiv = document.getElementById('registerError');
+            errorDiv.style.display = 'none';
+
+            try {
+                const res = await fetch(`${API_URL}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('isRegistered', 'true');
+                    window.location.href = 'app.html';
+                } else {
+                    errorDiv.textContent = data.error || 'Registration failed';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (err) {
+                errorDiv.textContent = 'Network error. Make sure backend is running.';
+                errorDiv.style.display = 'block';
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('logEmail').value;
+            const password = document.getElementById('logPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.style.display = 'none';
+
+            try {
+                const res = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('isRegistered', 'true');
+                    window.location.href = 'app.html';
+                } else {
+                    errorDiv.textContent = data.error || 'Login failed';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (err) {
+                errorDiv.textContent = 'Network error. Make sure backend is running.';
+                errorDiv.style.display = 'block';
+            }
+        });
     </script>
     <script src="js/i18n.js"></script>
 </body>
