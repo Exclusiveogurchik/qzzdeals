@@ -552,16 +552,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const promoClose = document.getElementById('promo-close');
     const promoLater = document.getElementById('promo-later');
     
-    if (promoPopup && !localStorage.getItem('authToken') && !localStorage.getItem('promoDismissedGlobal')) {
+    if (promoPopup && !localStorage.getItem('authToken') && !localStorage.getItem('promoDismissedV4')) {
         setTimeout(() => {
             promoPopup.style.display = 'flex';
             setTimeout(() => promoPopup.classList.add('show'), 50);
-        }, 20000); // 20 seconds
+        }, 5000); // 5 seconds
         
         const dismissPromo = () => {
             promoPopup.classList.remove('show');
             setTimeout(() => promoPopup.style.display = 'none', 500);
-            localStorage.setItem('promoDismissedGlobal', 'true');
+            localStorage.setItem('promoDismissedV4', 'true');
         };
         
         if (promoClose) promoClose.addEventListener('click', dismissPromo);
